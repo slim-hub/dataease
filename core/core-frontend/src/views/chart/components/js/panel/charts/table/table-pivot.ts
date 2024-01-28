@@ -300,37 +300,37 @@ export class TablePivot extends S2ChartView<PivotSheet> {
   }
 }
 function customCalcFunc(query, data, totalCfgMap) {
-  if (!data?.length) {
+  if (!data?.length || !query[EXTRA_FIELD]) {
     return 0
   }
   const aggregation = totalCfgMap[query[EXTRA_FIELD]].aggregation
   switch (aggregation) {
     case 'SUM': {
       return data.reduce((p, n) => {
-        return p + n[n[EXTRA_FIELD]]
+        return p + n[query[EXTRA_FIELD]]
       }, 0)
     }
     case 'AVG': {
       const sum = data.reduce((p, n) => {
-        return p + n[n[EXTRA_FIELD]]
+        return p + n[query[EXTRA_FIELD]]
       }, 0)
       return sum / data.length
     }
     case 'MIN': {
       const result = minBy(data, n => {
-        return n[n[EXTRA_FIELD]]
+        return n[query[EXTRA_FIELD]]
       })
-      return result[result[EXTRA_FIELD]]
+      return result[query[EXTRA_FIELD]]
     }
     case 'MAX': {
       const result = maxBy(data, n => {
-        return n[n[EXTRA_FIELD]]
+        return n[query[EXTRA_FIELD]]
       })
-      return result[result[EXTRA_FIELD]]
+      return result[query[EXTRA_FIELD]]
     }
     default: {
       return data.reduce((p, n) => {
-        return p + n[n[EXTRA_FIELD]]
+        return p + n[query[EXTRA_FIELD]]
       }, 0)
     }
   }
