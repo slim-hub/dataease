@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { toRefs, PropType, ref, onBeforeMount, watch, computed } from 'vue'
+import { toRefs, nextTick, PropType, ref, onBeforeMount, watch, computed } from 'vue'
 import { Calendar } from '@element-plus/icons-vue'
 import { type DatePickType } from 'element-plus-secondary'
 import { getCustomTime } from './time-format'
@@ -45,6 +45,7 @@ const props = defineProps({
   }
 })
 const selectValue = ref<[Date, Date]>([new Date(), new Date()])
+const rendering = ref(true)
 
 const { config } = toRefs(props)
 
@@ -80,7 +81,11 @@ const timeConfig = computed(() => {
 watch(
   () => timeConfig.value,
   () => {
-    init()
+    rendering.value = false
+    nextTick(() => {
+      init()
+      rendering.value = true
+    })
   },
   {
     deep: true
@@ -98,7 +103,11 @@ watch(
 watch(
   () => config.value.id,
   () => {
-    init()
+    rendering.value = false
+    nextTick(() => {
+      init()
+      rendering.value = true
+    })
   }
 )
 
@@ -140,6 +149,7 @@ const init = () => {
     'end-config'
   )
 
+  console.log('startTime, endTime', startTime, endTime)
   selectValue.value = [startTime, endTime]
 }
 
@@ -155,10 +165,22 @@ const formatDate = computed(() => {
 <template>
   <el-date-picker
     disabled
+    v-if="rendering && config.timeGranularityMultiple !== 'yearrange'"
     v-model="selectValue"
     :type="config.timeGranularityMultiple"
     :prefix-icon="Calendar"
     :format="formatDate"
+    :range-separator="$t('cron.to')"
+    :start-placeholder="$t('datasource.start_time')"
+    :end-placeholder="$t('datasource.end_time')"
+  />
+  <el-date-picker
+    v-else
+    disabled
+    v-model="selectValue"
+    type="yearrange"
+    :prefix-icon="Calendar"
+    format="YYYY"
     :range-separator="$t('cron.to')"
     :start-placeholder="$t('datasource.start_time')"
     :end-placeholder="$t('datasource.end_time')"
