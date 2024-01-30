@@ -1,7 +1,7 @@
 package io.dataease.provider.engine.doris;
 
 import com.google.gson.Gson;
-import io.dataease.dto.dataset.DataTableInfoDTO;
+import io.dataease.plugins.common.dto.dataset.DataTableInfoDTO;
 import io.dataease.plugins.common.base.domain.DatasetTableField;
 import io.dataease.plugins.common.base.domain.Datasource;
 import io.dataease.commons.utils.TableUtils;
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author gin
@@ -65,7 +66,24 @@ public class DorisDDLProvider extends DDLProviderImpl {
             sql = sql.replace("`UNIQUE_KEY`", "`" + String.join("`, `", keys) + "`")
                     .replace("DISTRIBUTED_BY_HASH", keys.get(0)).replace("Column_Fields", createDorisTableColumnSql(datasetTableFields, version, keys));
         } else {
-            sql = sql.replace("UNIQUE_KEY", "dataease_uuid").replace("DISTRIBUTED_BY_HASH", "dataease_uuid").replace("Column_Fields", createDorisTableColumnSql(datasetTableFields, version, null));
+            if(!datasetTableFields.stream().map(DatasetTableField::getDataeaseName).collect(Collectors.toList()).contains("dataease_uuid")){
+                List<DatasetTableField> tempList = new ArrayList<>();
+                DatasetTableField datasetTableField = new DatasetTableField();
+                datasetTableField.setDeExtractType(0);
+                datasetTableField.setType("String");
+                datasetTableField.setDeType(0);
+                datasetTableField.setDataeaseName("dataease_uuid");
+                datasetTableField.setOriginName("dataease_uuid");
+                datasetTableField.setSize(50);
+                tempList.add(0, datasetTableField);
+                for (int i = 0; i < datasetTableFields.size(); i++) {
+                    tempList.add(datasetTableFields.get(i));
+                }
+                sql = sql.replace("UNIQUE_KEY", "dataease_uuid").replace("DISTRIBUTED_BY_HASH", "dataease_uuid").replace("Column_Fields", createDorisTableColumnSql(tempList, version, null));
+            }else {
+                sql = sql.replace("UNIQUE_KEY", "dataease_uuid").replace("DISTRIBUTED_BY_HASH", "dataease_uuid").replace("Column_Fields", createDorisTableColumnSql(datasetTableFields, version, null));
+            }
+
         }
 
         return sql;

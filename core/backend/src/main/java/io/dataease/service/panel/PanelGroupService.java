@@ -20,7 +20,7 @@ import io.dataease.dto.chart.ChartViewDTO;
 import io.dataease.dto.dataset.DataSetGroupDTO;
 import io.dataease.dto.dataset.DataSetTableDTO;
 import io.dataease.dto.dataset.DataSetTaskDTO;
-import io.dataease.dto.dataset.DataTableInfoDTO;
+import io.dataease.plugins.common.dto.dataset.DataTableInfoDTO;
 import io.dataease.dto.panel.PanelExport2App;
 import io.dataease.dto.panel.PanelGroupDTO;
 import io.dataease.dto.panel.PanelTemplateFileDTO;
@@ -50,6 +50,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.pentaho.di.core.util.UUIDUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
@@ -142,6 +143,9 @@ public class PanelGroupService {
 
     @Resource
     private DatasourceMapper datasourceMapper;
+
+    @Value("${export.views.limit:100000}")
+    private Long limit;
 
     public List<PanelGroupDTO> tree(PanelGroupRequest panelGroupRequest) {
         String userId = String.valueOf(AuthUtils.getUser().getUserId());
@@ -1162,8 +1166,8 @@ public class PanelGroupService {
             try {
                 List<String> excelHeaderKeys = request.getExcelHeaderKeys();
                 ChartExtRequest componentFilterInfo = request.getComponentFilterInfo();
-                componentFilterInfo.setGoPage(1l);
-                componentFilterInfo.setPageSize(1000000l);
+                componentFilterInfo.setGoPage(1L);
+                componentFilterInfo.setPageSize(limit);
                 componentFilterInfo.setExcelExportFlag(true);
                 componentFilterInfo.setProxy(request.getProxy());
                 componentFilterInfo.setUser(request.getUserId());
