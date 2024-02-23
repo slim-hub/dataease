@@ -12,7 +12,7 @@
     <select id="query" parameterType="io.dataease.plugins.common.request.KeywordRequest" resultMap="io.dataease.plugins.common.base.mapper.SysRoleMapper.BaseResultMap">
         select r.* from sys_role r
         <if test="keyword != null">
-            where name like concat('%', #{keyword} , '%')
+            where `name` like concat('%', #{keyword} , '%')
         </if>
         <choose>
             <when test="orders!=null and orders.size > 0">
@@ -32,6 +32,9 @@
     <delete id="deleteRoleMenu">
         delete from sys_roles_menus where role_id = #{roleId}
     </delete>
+    <delete id="deleteUsersRoles">
+        delete from sys_users_roles where role_id = #{roleId} and user_id=#{userId}
+    </delete>
 
     <insert id="batchInsertRoleMenu">
         insert into sys_roles_menus (role_id, menu_id) values
@@ -40,13 +43,24 @@
         </foreach>
     </insert>
 
+
+    <insert id="batchInsertUsersRoles">
+        insert into sys_users_roles (role_id, user_id) values
+        <foreach collection="usersRoles" item="item" separator=",">
+            (#{item.roleId},#{item.userId})
+        </foreach>
+    </insert>
+
+
     <select id="queryAll" resultMap="roleItemMap">
         select role_id as id, name from sys_role
     </select>
 
-    <select id="menuIds" resultType="java.lang.Long">
+    <select id="menuIds" resultType="arraylist">
         select menu_id from sys_roles_menus where role_id =  #{roleId}
     </select>
+
+
 
 
 

@@ -3,6 +3,8 @@ package io.dataease.plugins.common.base.mapper;
 import io.dataease.plugins.common.base.domain.SysRole;
 import io.dataease.plugins.common.base.domain.SysRoleExample;
 import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 public interface SysRoleMapper {

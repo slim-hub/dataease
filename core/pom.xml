@@ -10,7 +10,7 @@
     <parent>
         <groupId>io.dataease</groupId>
         <artifactId>dataease</artifactId>
-        <version>${dataease.version}</version>
+        <version>1.18.14</version>
     </parent>
 
     <name>dataease</name>

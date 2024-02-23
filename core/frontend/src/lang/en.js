@@ -754,6 +754,7 @@ export default {
     add: 'Create Role',
     delete: 'Delete Role',
     modify: 'Modify Role',
+    role_list: 'Role List',
     tips: 'Tips',
     confirm_delete: 'Confirm delete role ',
     role_name: 'Role Name ',

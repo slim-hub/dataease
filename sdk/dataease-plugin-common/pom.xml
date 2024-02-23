@@ -5,8 +5,10 @@
     <parent>
         <artifactId>dataease-extension-sdk</artifactId>
         <groupId>io.dataease</groupId>
-        <version>${dataease.version}</version>
+        <version>1.18.14</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>dataease-plugin-common</artifactId>

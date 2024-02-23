@@ -752,6 +752,7 @@ export default {
     add: '新建角色',
     delete: '删除角色',
     modify: '修改角色',
+    role_list: '角色列表',
     tips: '提示',
     confirm_delete: '确认删除角色 ',
     search_by_name: '按名称搜索',
